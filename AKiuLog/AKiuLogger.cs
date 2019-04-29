@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace KiuLog
+namespace AKiuLog
 {
 
   public enum AkiuLogLevel
@@ -24,8 +24,6 @@ namespace KiuLog
 
     public static string LogRootPath;
 
-
-
     public static AKiuLogger GetCurrentLogger()
     {
       if (logger == null)
@@ -35,14 +33,11 @@ namespace KiuLog
       return logger;
     }
 
-
     public static void RegisterAkiuLog(string rootPath)
     {
       LogRootPath = rootPath;
       logger = new AKiuLogger();
     }
-
-
 
     private AKiuLogger() { }
 
@@ -51,13 +46,9 @@ namespace KiuLog
 
     }
 
-
-    public void Debugg(KiuLogMessage meesage)
+    public void Debugg(AKiuLogMessage meesage)
     {
       meesage.Level = AkiuLogLevel.Debugg;
     }
-
-
-
   }
 }

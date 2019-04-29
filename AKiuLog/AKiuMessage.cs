@@ -2,26 +2,24 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace KiuLog
+namespace AKiuLog
 {
-  public class KiuLogMessage
+  public class AKiuLogMessage
   {
-
     public DateTime Date { get; set; } = DateTime.Now;
     public AkiuLogLevel Level { get; set; }
     public string Content { get; set; }
 
     public override string ToString()
     {
-      this.Content = this.Date.ToString("yyyy-MM-dd hh:mm:ss\n") + this.Content;
-      return this.Content + "\n";
+      this.Content = $"{this.Date.ToString("yyyy-MM-dd hh:mm:ss")}\n{this.Content}\n";
+      return this.Content ;
     }
   }
 
-
-  public class KiuLogErrorMessage : KiuLogMessage
+  public class AKiuLogErrorMessage : AKiuLogMessage
   {
-    public KiuLogErrorMessage(Exception ex)
+    public AKiuLogErrorMessage(Exception ex)
     {
       this.Level = AkiuLogLevel.Error;
       this.Ex = ex;
@@ -29,7 +27,7 @@ namespace KiuLog
     public Exception Ex { get; set; }
     public override string ToString()
     {
-      this.Content = $"错误信息：{Ex.Message}\n错误类型：{Ex.Source}\n堆栈信息：{Ex.StackTrace}\n" + this.Content;
+      this.Content = $"错误信息：{Ex.Message}\n错误类型：{Ex.Source}\n堆栈信息：{Ex.StackTrace}\n{this.Content}";
       return base.ToString();
     }
   }
