@@ -1,5 +1,8 @@
 ﻿using System;
 using System.IO;
+﻿using AKiuLog;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace AKiuLog
 {
@@ -13,6 +16,8 @@ namespace AKiuLog
     /// </summary>
     public static string LogRootPath;
     public static object _lock = new object();
+    private static Queue<AKiuLogMessage> logQueue = new Queue<AKiuLogMessage>();
+    private static ManualResetEvent signal = new ManualResetEvent(false);
 
     private static AKiuLogger logger
     {
@@ -31,6 +36,7 @@ namespace AKiuLog
 
     private AKiuLogger() { }
 
+
     public static AKiuLogger GetCurrentLogger()
     {
       if (logger == null)
@@ -39,6 +45,10 @@ namespace AKiuLog
         return logger;
     }
 
+    /// <summary>
+    /// 开启线程，注册日志队列“事件”
+    /// </summary>
+    /// <param name="rootPath"></param>
     public static void RegisterAkiuLog(string rootPath)
     {
       // 初始化日志类
@@ -53,6 +63,34 @@ namespace AKiuLog
         Directory.CreateDirectory(rootPath);
       if (!Directory.Exists(rootPath + "\\Log\\Warning"))
         Directory.CreateDirectory(rootPath);
+
+      Thread log_threa = new Thread(logger.QueueHandleThread);
+      log_threa.Start();
+
+    }
+
+
+    /// <summary>
+    /// 队列线程处理
+    /// </summary>
+    private void QueueHandleThread()
+    {
+      // 死循环，线程一直保持运行
+      while (true)
+      {
+        // 等待信号
+        signal.WaitOne();
+        if (logQueue.Count > 0)
+        {
+          AKiuLogMessage message ;
+          while ((message = logQueue.Dequeue()) != null)
+          {
+            this.WriteLog(/*message*/);
+          }
+        }
+
+
+      }
     }
 
     private void WriteLog()
@@ -70,5 +108,6 @@ namespace AKiuLog
     {
       meesage.Level = AkiuLogLevel.Debug;
     }
+
   }
 }
