@@ -7,12 +7,6 @@ namespace AKiuLog
 {
 
 
-  public interface IAKiuLogWriter
-  {
-
-  }
-
-
 
   /// <summary>
   /// 基础日志实体类，自动记录日期时间戳
@@ -20,12 +14,6 @@ namespace AKiuLog
   public abstract class AKiuLogMessage
   {
 
-
-    //AKiuLogMessage message;
-    //public AKiuLogMessage(AKiuLogMessage message)
-    //{
-    //  this.message = message;
-    //}
 
     public Type LoggerType { get; protected set; }
     /// <summary>
