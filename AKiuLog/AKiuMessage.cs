@@ -4,6 +4,14 @@ using System.Text;
 
 namespace AKiuLog
 {
+  public enum AkiuLogLevel
+  {
+    Debug,
+    Info,
+    Error,
+    Warning
+  }
+
   public class AKiuLogMessage
   {
     public DateTime Date { get; set; }
