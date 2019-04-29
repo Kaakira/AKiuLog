@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KiuLog;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -13,7 +14,7 @@ namespace AKiuLog
     public override string ToString()
     {
       this.Content = $"{this.Date.ToString("yyyy-MM-dd hh:mm:ss")}\n{this.Content}\n";
-      return this.Content ;
+      return this.Content;
     }
   }
 

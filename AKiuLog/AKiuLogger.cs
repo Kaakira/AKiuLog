@@ -1,7 +1,11 @@
-﻿using System;
+﻿using AKiuLog;
+using System;
+using System.Collections.Generic;
+using System.Threading;
 
-namespace AKiuLog
+namespace KiuLog
 {
+
   public enum AkiuLogLevel
   {
     Debug,
@@ -10,45 +14,72 @@ namespace AKiuLog
     Warning
   }
 
+
   /// <summary>
   /// 队列日志
   /// </summary>
   public class AKiuLogger
   {
 
-    public static object _lock = new object();
+    private static string LogRootPath;
+    private static Queue<AKiuLogMessage> logQueue = new Queue<AKiuLogMessage>();
+    private static AKiuLogger logger ;
+    private static ManualResetEvent signal = new ManualResetEvent(false);
 
-    private static AKiuLogger logger
-    {
-      get
-      {
-        return logger;
-      }
-      set
-      {
-        if (logger != null)
-          new Exception("logger只能被初始化一次");
-        else
-          logger = value;
-      }
-    }
 
-    public static string LogRootPath;
-
-    private AKiuLogger() { }
 
     public static AKiuLogger GetCurrentLogger()
     {
       if (logger == null)
+      {
         throw new Exception("使用logger类前，需要先执行RegisterAkiuLog方法");
-      else
-        return logger;
+      }
+      return logger;
     }
 
+
+    /// <summary>
+    /// 开启线程，注册日志队列“事件”
+    /// </summary>
+    /// <param name="rootPath"></param>
     public static void RegisterAkiuLog(string rootPath)
     {
       LogRootPath = rootPath;
       logger = new AKiuLogger();
+      // 启用线程
+      Thread log_threa = new Thread(logger.QueueHandleThread);
+      log_threa.Start();
+
+    }
+
+
+    /// <summary>
+    /// 队列线程处理
+    /// </summary>
+    private void QueueHandleThread()
+    {
+      // 死循环，线程一直保持运行
+      while (true)
+      {
+        // 等待信号
+        signal.WaitOne();
+        if (logQueue.Count > 0)
+        {
+          AKiuLogMessage message ;
+          while ((message = logQueue.Dequeue()) != null)
+          {
+            this.WriteLog(/*message*/);
+          }
+        }
+
+
+      }
+    }
+
+
+    private AKiuLogger()
+    {
+
     }
 
     private void WriteLog()
@@ -56,9 +87,13 @@ namespace AKiuLog
 
     }
 
-    public void Debug(AKiuLogMessage meesage)
+
+    public void Debugg(AKiuLogMessage meesage)
     {
       meesage.Level = AkiuLogLevel.Debug;
     }
+
+
+
   }
 }
