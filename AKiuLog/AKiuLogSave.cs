@@ -6,9 +6,8 @@ namespace AKiuLog
 {
   /// <summary>
   /// 日志记录器
-  /// 
   /// </summary>
-  public interface IAKiuLogger
+  public interface IAKiuLogSave
   {
 
     // TODO: 子类实现：记录日志的逻辑（写入文件/写入数据库）
@@ -18,10 +17,13 @@ namespace AKiuLog
 
   }
 
+
+
+
   /// <summary>
-  /// 默认日志记录器
+  /// 默认日志记录器(保存
   /// </summary>
-  public class AKiuLogger : IAKiuLogger
+  public class AKiuLogSave : IAKiuLogSave
   {
 
     // TODO: 子类实现：记录日志的逻辑（写入文件/写入数据库）
@@ -29,8 +31,6 @@ namespace AKiuLog
     {
       Console.WriteLine(message.LogContent());
     }
-
-
 
   }
 }

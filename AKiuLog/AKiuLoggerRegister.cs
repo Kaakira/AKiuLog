@@ -33,7 +33,7 @@ namespace KiuLog
     /// <summary>
     /// logger日志记录器字典
     /// </summary>
-    private static Dictionary<Type,IAKiuLogger> loggers = new Dictionary<Type, IAKiuLogger>();
+    private static Dictionary<Type,IAKiuLogSave> loggers = new Dictionary<Type, IAKiuLogSave>();
 
 
     /// <summary>
@@ -41,7 +41,7 @@ namespace KiuLog
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public AKiuLoggerRegister AddSignleLogger<T>() where T : IAKiuLogger, new()
+    public AKiuLoggerRegister AddSignleLogger<T>() where T : IAKiuLogSave, new()
     {
 
       loggers.Add(typeof(T), new T());
@@ -58,11 +58,11 @@ namespace KiuLog
     {
       LogRootPath = rootPath;
       // 添加默认logger记录器
-      loggers.Add(typeof(AKiuLogger), new AKiuLogger());
+      loggers.Add(typeof(AKiuLogSave), new AKiuLogSave());
 
       // 启用线程
-      Thread log_threa = new Thread(QueueHandleThread);
-      log_threa.Start();
+      Thread thread = new Thread(QueueHandleThread);
+      thread.Start();
     }
 
 
@@ -71,27 +71,36 @@ namespace KiuLog
     /// </summary>
     private void QueueHandleThread()
     {
+
       // 死循环，线程一直保持运行
+      AKiuLogMessage message = null;
       while (true)
       {
-        // 等待信号
-        signal.WaitOne();
-        // 接收到信号，重置信号
-        signal.Reset();
-        if (logQueue.Count > 0)
+        try
         {
-          AKiuLogMessage message ;
-          // 记录日志，
-          while ((message = logQueue.Dequeue()) != null)
+          // 等待信号
+          signal.WaitOne();
+          // 接收到信号，重置信号
+          signal.Reset();
+          if (logQueue.Count > 0)
           {
-            // 日志内容
-            // string content = message.ToString();
-            // TODO: 日志记录器记录日志（不同的日志记录器，效果不同，这样开发者可以通过实现不同的日志记录器，自定义记录日志的格式、方式，比如插入到数据库中，而非写入文件），但是问题是，日志记录器，在这里怎样获取比较好.
-            // 已解决
-            IAKiuLogger logger = loggers[message.LoggerType];
-            // TODO: 实现logger类
-            logger.SaveLog(message);
+            // 记录日志，
+            while ((message = logQueue.Dequeue()) != null)
+            {
+              // 日志内容
+              // string content = message.ToString();
+              IAKiuLogSave logger = loggers[message.LoggerType];
+              // TODO: 实现logger类
+              logger.SaveLog(message);
+            }
           }
+        }
+        catch (Exception ex)
+        {
+          // 使用默认记录器记录队列执行异常
+          AKiuLogErrorMessage  error = new AKiuLogErrorMessage(ex);
+          error.SetColumns<AKiuLogSave>("日志队列线程出现错误", message == null ? "" : "日志内容：" + message.LogContent());
+          loggers[error.LoggerType].SaveLog(error);
         }
       }
     }
