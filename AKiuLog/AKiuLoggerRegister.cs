@@ -22,9 +22,17 @@ namespace KiuLog
   {
 
     private static string LogRootPath;
+    /// <summary>
+    /// 日志message队列
+    /// </summary>
     private static Queue<AKiuLogMessage> logQueue = new Queue<AKiuLogMessage>();
+    /// <summary>
+    /// 线程阻断信号
+    /// </summary>
     private static ManualResetEvent signal = new ManualResetEvent(false);
-
+    /// <summary>
+    /// logger日志记录器字典
+    /// </summary>
     private static Dictionary<Type,IAKiuLogger> loggers = new Dictionary<Type, IAKiuLogger>();
 
 
