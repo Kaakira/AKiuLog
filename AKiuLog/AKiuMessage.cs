@@ -1,42 +1,63 @@
-﻿using System;
+﻿using KiuLog;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace AKiuLog
 {
-  public enum AkiuLogLevel
-  {
-    Debug,
-    Info,
-    Error,
-    Warning
-  }
-
+  /// <summary>
+  /// 基础日志实体类，自动记录日期时间戳
+  /// </summary>
   public class AKiuLogMessage
   {
-    public DateTime Date { get; set; }
+    /// <summary>
+    /// 获取到日志记录时时间
+    /// </summary>
+    public DateTime Date { get; protected set; }
     public AkiuLogLevel Level { get; set; }
-    public string Content { get; set; }
+    /// <summary>
+    /// 日志“列”，因为用换行符分割了，所以是竖着的列
+    /// </summary>
+    protected List<string> Columns { get; set; } = new List<string>();
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="columns"></param>
+    public void AddColumns(params string[] columns)
+    {
+      this.Columns.AddRange(columns);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     public override string ToString()
     {
-      this.Content = $"{this.Date.ToString("yyyy-MM-dd hh:mm:ss")}\n{this.Content}\n";
-      return this.Content;
+      // 日志记录时间
+      this.Date = DateTime.Now;
+      string content = this.Date.ToString("yyyy-MM-dd hh:mm:ss") + Environment.NewLine;
+      return content + string.Join(Environment.NewLine, this.Columns);
     }
   }
 
+
+  /// <summary>
+  /// 错误日志实体类，自动记录引发的异常信息
+  /// </summary>
   public class AKiuLogErrorMessage : AKiuLogMessage
   {
     public AKiuLogErrorMessage(Exception ex)
     {
-      this.Date = DateTime.Now;
       this.Level = AkiuLogLevel.Error;
       this.Ex = ex;
     }
+
     public Exception Ex { get; set; }
     public override string ToString()
     {
-      this.Content = $"错误信息：{Ex.Message}\n错误类型：{Ex.Source}\n堆栈信息：{Ex.StackTrace}\n{this.Content}";
+      this.AddColumns("错误信息：" + Ex.Message, "错误类型：" + Ex.Source, "堆栈信息：" + Ex.StackTrace);
       return base.ToString();
     }
   }
