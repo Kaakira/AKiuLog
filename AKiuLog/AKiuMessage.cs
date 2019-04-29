@@ -6,7 +6,7 @@ namespace AKiuLog
 {
   public class AKiuLogMessage
   {
-    public DateTime Date { get; set; } = DateTime.Now;
+    public DateTime Date { get; set; }
     public AkiuLogLevel Level { get; set; }
     public string Content { get; set; }
 
@@ -21,6 +21,7 @@ namespace AKiuLog
   {
     public AKiuLogErrorMessage(Exception ex)
     {
+      this.Date = DateTime.Now;
       this.Level = AkiuLogLevel.Error;
       this.Ex = ex;
     }
