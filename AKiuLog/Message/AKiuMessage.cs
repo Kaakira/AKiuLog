@@ -1,9 +1,10 @@
-﻿using KiuLog;
+﻿using AKiuLog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
-namespace AKiuLog
+namespace AKiuLog.Message
 {
 
 
@@ -38,7 +39,6 @@ namespace AKiuLog
         this.Columns.Clear();
       }
       this.Columns.AddRange(columns);
-
     }
 
     /// <summary>
@@ -61,33 +61,19 @@ namespace AKiuLog
       this.Columns.AddRange(ConvertColumns());
       return content + string.Join(Environment.NewLine, this.Columns);
     }
-  }
 
-
-  /// <summary>
-  /// 错误日志实体类，自动记录引发的异常信息
-  /// </summary>
-  public class AKiuLogErrorMessage : AKiuLogMessage
-  {
-
-    public AKiuLogErrorMessage(Exception ex)
+    /// <summary>
+    /// 按照年月日分级存储日志文件
+    /// 例如：2019/05/Debug_01.log
+    /// </summary>
+    /// <returns></returns>
+    public string LogFilePath()
     {
-      this.Level = AkiuLogLevel.Error;
-      this.Ex = ex;
+      return Path.Combine(DateTime.Now.Year.ToString(), DateTime.Now.Month.ToString(), Level.ToString() + "_" + DateTime.Now.Day + ".log");
     }
 
-    public Exception Ex { get; set; }
 
-
-    public override string[] ConvertColumns()
-    {
-      return new string[] {
-        "错误信息：" + Ex.Message,
-        "错误类型：" + Ex.Source,
-        "堆栈信息：" + Ex.StackTrace
-      };
-
-    }
   }
+
 
 }
