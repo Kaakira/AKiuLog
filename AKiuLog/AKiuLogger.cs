@@ -9,6 +9,7 @@ namespace AKiuLog
   public class AKiuLogger
   {
     private static AKiuLogger instance;
+    private static object lockObject = new object();
 
     public string LogFilePath;
 
@@ -36,7 +37,7 @@ namespace AKiuLog
       if (instance == null)
       {
         // 锁定，双重判断，处理多线程时可能会出现的错误
-        lock (instance)
+        lock (lockObject)
         {
           if (instance == null)
           {
@@ -50,9 +51,14 @@ namespace AKiuLog
 
     public void WriteLog(AKiuLogMessage message)
     {
-      this.QueueLog.Enqueue(message);
-    }
+      message.SetFileRootPath(this.LogFilePath);
+      if (message != null)
+      {
+        this.QueueLog.Enqueue(message);
+        AKiuLoggerRegister.LogSet();
+      }
 
+    }
 
 
   }

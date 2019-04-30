@@ -26,11 +26,11 @@ namespace AKiuLog
   /// <summary>
   /// 默认文件日志记录器(保存
   /// </summary>
-  public class AKiuLogFileSave : IAKiuLogSave
+  public class AKiuLogSaveFile : IAKiuLogSave
   {
     public void SaveLog(AKiuLogMessage message)
     {
-      string path =Path.Combine(AKiuLogger.Logger().GetFullPath(), message.LogFilePath());
+      string path =Path.Combine(message.LogFilePath);
       using (FileStream logFile = AKiuLogFile.Create(path))
       using (StreamWriter writer = new StreamWriter(logFile))
       {
