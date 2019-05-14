@@ -25,3 +25,26 @@ for (int i = 0; i < 50; i++)
 }
 ```
 
+# 在Asp Net Core中使用
+可以写一个host扩展方法
+```c#
+public static IWebHostBuilder AddAKiuLogger(this IWebHostBuilder host, string logpath)
+{
+  // 注册日志队列服务
+  AKiuLoggerRegister logRegister = new AKiuLoggerRegister();
+  if (string.IsNullOrEmpty(logpath))
+  {
+    logpath = "log";
+  }
+  if (!Path.IsPathRooted(logpath))
+  {
+    logpath = Path.Combine(Directory.GetCurrentDirectory(), logpath);
+  }
+
+
+  logRegister.RegisterAkiuLog(logpath);
+
+
+  return host;
+}
+```
