@@ -43,7 +43,7 @@ namespace KiuLog
     /// <returns></returns>
     public KiuLoggerRegister AddFileStored<T>(string rootPath) where T : IKiuLogContent
     {
-      logStoreds.Add(typeof(T).FullName, new KiuLogStoredFile(rootPath));
+      logStoreds.Add(IKI new KiuLogStoredFile(rootPath));
       return this;
     }
 

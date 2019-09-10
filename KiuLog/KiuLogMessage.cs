@@ -9,16 +9,22 @@ namespace KiuLog.Message
 
   public interface IKiuLogContent
   {
-     string LogContent();
+    string LogContent();
+     string GetIdentity();
   }
 
 
   /// <summary>
   /// 日志实体类，自动记录日期时间戳
-  /// 纵列记录日志
+ /// 纵列记录日志
   /// </summary>
   public class KiuLogContent : IKiuLogContent
   {
+    public static string GetIdentity()
+    {
+      return "123";
+    }
+
     /// <summary>
     /// 获取到日志记录时时间
     /// </summary>

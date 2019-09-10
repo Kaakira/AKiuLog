@@ -26,7 +26,7 @@ namespace KiuLog.Tests
       register.AddFileStored("../")
         .Catch(ex =>
         {
-          throw ex;
+          thorex;
         })
         .Register();
 

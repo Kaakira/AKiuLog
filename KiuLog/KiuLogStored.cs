@@ -12,7 +12,6 @@ namespace KiuLog
   /// </summary>
   public interface IKiuLogStored
   {
-    string GetIdentity();
     // TODO: 子类实现：记录日志的逻辑（写入文件/写入数据库）
     void SaveLog(KiuLogContent message);
   }
@@ -33,10 +32,6 @@ namespace KiuLog
       KiuLogStoredFile.path = rootPath;
     }
 
-    public string GetIdentity()
-    {
-      return identity;
-    }
 
     public void SaveLog(KiuLogContent content)
     {
