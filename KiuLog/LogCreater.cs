@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 
-namespace AKiuLog.FileLog
+namespace KiuLog.FileLog
 {
-  public class AKiuLogFile
+  public class KiuLogFile
   {
 
     public static FileStream Create(string fullPath)
